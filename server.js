@@ -15,12 +15,9 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/sm-priya-electricals', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.log(err));
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/sm-priya-electricals')
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log(err));
 
 // Create default admin
 const Admin = require('./models/Admin');
