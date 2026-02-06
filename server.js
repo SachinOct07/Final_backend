@@ -53,7 +53,7 @@ const createDefaultAdmin = async () => {
     console.log('Error creating default admin:', err);
   }
 };
-createDefaultAdmin();
+// createDefaultAdmin() is called inside connectDB()
 
 // Routes
 app.use('/api/admin', require('./routes/admin'));
