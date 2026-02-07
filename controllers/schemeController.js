@@ -11,7 +11,8 @@ exports.getSchemes = async (req, res) => {
 
 exports.createScheme = async (req, res) => {
   const { title, description } = req.body;
-  const image = req.file ? req.file.path : null;
+  // Normalize path to use forward slashes for URLs
+  const image = req.file ? req.file.path.replace(/\\/g, '/') : null;
   try {
     const scheme = new Scheme({ title, description, image });
     await scheme.save();
@@ -23,7 +24,8 @@ exports.createScheme = async (req, res) => {
 
 exports.updateScheme = async (req, res) => {
   const { title, description } = req.body;
-  const image = req.file ? req.file.path : req.body.image;
+  // Normalize path to use forward slashes for URLs
+  const image = req.file ? req.file.path.replace(/\\/g, '/') : req.body.image;
   try {
     const scheme = await Scheme.findByIdAndUpdate(req.params.id, { title, description, image }, { new: true });
     res.json(scheme);

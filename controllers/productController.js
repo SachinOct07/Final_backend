@@ -12,7 +12,8 @@ exports.getProducts = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   const { name, category, rate } = req.body;
-  const image = req.file ? req.file.path : null;
+  // Normalize path to use forward slashes for URLs
+  const image = req.file ? req.file.path.replace(/\\/g, '/') : null;
   try {
     const product = new Product({ name, category, rate, image });
     await product.save();
@@ -24,7 +25,8 @@ exports.createProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   const { name, category, rate } = req.body;
-  const image = req.file ? req.file.path : req.body.image;
+  // Normalize path to use forward slashes for URLs
+  const image = req.file ? req.file.path.replace(/\\/g, '/') : req.body.image;
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, { name, category, rate, image }, { new: true });
     res.json(product);

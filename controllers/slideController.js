@@ -11,7 +11,8 @@ exports.getSlides = async (req, res) => {
 
 exports.createSlide = async (req, res) => {
   const { text } = req.body;
-  const image = req.file.path;
+  // Normalize path to use forward slashes for URLs
+  const image = req.file.path.replace(/\\/g, '/');
   try {
     const slide = new Slide({ image, text });
     await slide.save();
@@ -23,7 +24,8 @@ exports.createSlide = async (req, res) => {
 
 exports.updateSlide = async (req, res) => {
   const { text } = req.body;
-  const image = req.file ? req.file.path : req.body.image;
+  // Normalize path to use forward slashes for URLs
+  const image = req.file ? req.file.path.replace(/\\/g, '/') : req.body.image;
   try {
     const slide = await Slide.findByIdAndUpdate(req.params.id, { image, text }, { new: true });
     res.json(slide);
