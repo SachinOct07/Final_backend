@@ -11,8 +11,8 @@ exports.getProjects = async (req, res) => {
 
 exports.createProject = async (req, res) => {
   const { title, description } = req.body;
-  // Normalize path to use forward slashes for URLs
-  const video = req.file.path.replace(/\\/g, '/');
+  // Cloudinary returns the full URL in req.file.path
+  const video = req.file ? req.file.path : null;
   try {
     const project = new Project({ title, description, video });
     await project.save();
@@ -24,8 +24,8 @@ exports.createProject = async (req, res) => {
 
 exports.updateProject = async (req, res) => {
   const { title, description } = req.body;
-  // Normalize path to use forward slashes for URLs
-  const video = req.file ? req.file.path.replace(/\\/g, '/') : req.body.video;
+  // Use new Cloudinary URL if file uploaded, otherwise keep existing
+  const video = req.file ? req.file.path : req.body.video;
   try {
     const project = await Project.findByIdAndUpdate(req.params.id, { title, description, video }, { new: true });
     res.json(project);

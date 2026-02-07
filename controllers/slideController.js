@@ -11,8 +11,8 @@ exports.getSlides = async (req, res) => {
 
 exports.createSlide = async (req, res) => {
   const { text } = req.body;
-  // Normalize path to use forward slashes for URLs
-  const image = req.file.path.replace(/\\/g, '/');
+  // Cloudinary returns the full URL in req.file.path
+  const image = req.file ? req.file.path : null;
   try {
     const slide = new Slide({ image, text });
     await slide.save();
@@ -24,8 +24,8 @@ exports.createSlide = async (req, res) => {
 
 exports.updateSlide = async (req, res) => {
   const { text } = req.body;
-  // Normalize path to use forward slashes for URLs
-  const image = req.file ? req.file.path.replace(/\\/g, '/') : req.body.image;
+  // Use new Cloudinary URL if file uploaded, otherwise keep existing
+  const image = req.file ? req.file.path : req.body.image;
   try {
     const slide = await Slide.findByIdAndUpdate(req.params.id, { image, text }, { new: true });
     res.json(slide);

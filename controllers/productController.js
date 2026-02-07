@@ -12,8 +12,8 @@ exports.getProducts = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   const { name, category, rate } = req.body;
-  // Normalize path to use forward slashes for URLs
-  const image = req.file ? req.file.path.replace(/\\/g, '/') : null;
+  // Cloudinary returns the full URL in req.file.path
+  const image = req.file ? req.file.path : null;
   try {
     const product = new Product({ name, category, rate, image });
     await product.save();
@@ -25,8 +25,8 @@ exports.createProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   const { name, category, rate } = req.body;
-  // Normalize path to use forward slashes for URLs
-  const image = req.file ? req.file.path.replace(/\\/g, '/') : req.body.image;
+  // Use new Cloudinary URL if file uploaded, otherwise keep existing
+  const image = req.file ? req.file.path : req.body.image;
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, { name, category, rate, image }, { new: true });
     res.json(product);
