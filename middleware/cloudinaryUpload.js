@@ -9,6 +9,8 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+console.log('✅ Cloudinary configured:', process.env.CLOUDINARY_CLOUD_NAME ? 'Cloud name set' : '⚠️ Missing CLOUDINARY_CLOUD_NAME');
+
 // Storage for images (products, schemes, slides)
 const imageStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
