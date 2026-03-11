@@ -11,9 +11,11 @@ exports.getBills = async (req, res) => {
 };
 
 exports.createBill = async (req, res) => {
-  const { items, tax } = req.body;
+  const { customerName, customerPhone, customerAddress, invoiceDate, items, discount = 0, tax = 0 } = req.body;
   try {
-    let total = 0;
+    let subtotal = 0;
+    const processedItems = [];
+
     for (let item of items) {
       // Find stock by product reference or by productId
       let stock;
@@ -24,14 +26,35 @@ exports.createBill = async (req, res) => {
       }
 
       if (!stock || stock.quantity < item.quantity) {
-        return res.status(400).json({ message: `Insufficient stock for ${stock ? stock.productName : 'product'}` });
+        return res.status(400).json({ message: `Insufficient stock for ${stock ? stock.productName : item.productName || 'product'}` });
       }
       stock.quantity -= item.quantity;
       await stock.save();
-      total += item.quantity * item.rate;
+      
+      const itemRate = Number(item.rate) || 0;
+      subtotal += item.quantity * itemRate;
+
+      processedItems.push({
+        productId: stock.productId,
+        productName: stock.productName,
+        quantity: item.quantity,
+        rate: itemRate
+      });
     }
-    total += tax;
-    const bill = new Bill({ items, tax, total });
+
+    const total = subtotal + Number(tax) - Number(discount);
+    
+    const bill = new Bill({
+      customerName, 
+      customerPhone,
+      customerAddress,
+      invoiceDate,
+      items: processedItems, 
+      discount: Number(discount), 
+      tax: Number(tax), 
+      total 
+    });
+    
     await bill.save();
     res.status(201).json(bill);
   } catch (err) {

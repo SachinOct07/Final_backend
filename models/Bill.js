@@ -1,12 +1,18 @@
 const mongoose = require('mongoose');
 
 const billSchema = new mongoose.Schema({
+  customerName: { type: String, required: true },
+  customerPhone: { type: String, required: true },
+  customerAddress: { type: String },
+  invoiceDate: { type: Date, required: true },
   items: [{
-    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    productId: { type: String },
+    productName: { type: String, required: true },
     quantity: { type: Number, required: true },
     rate: { type: Number, required: true },
   }],
-  tax: { type: Number, required: true },
+  discount: { type: Number, default: 0 },
+  tax: { type: Number, required: true, default: 0 },
   total: { type: Number, required: true },
 }, { timestamps: true });
 
