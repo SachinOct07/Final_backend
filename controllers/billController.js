@@ -3,7 +3,7 @@ const Stock = require('../models/Stock');
 
 exports.getBills = async (req, res) => {
   try {
-    const bills = await Bill.find().populate('items.product');
+    const bills = await Bill.find();
     res.json(bills);
   } catch (err) {
     res.status(500).json({ message: err.message });
