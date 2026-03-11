@@ -11,11 +11,11 @@ exports.getProducts = async (req, res) => {
 };
 
 exports.createProduct = async (req, res) => {
-  const { name, category, rate } = req.body;
+  const { name, category, description } = req.body;
   // Cloudinary returns the full URL in req.file.path
   const image = req.file ? req.file.path : null;
   try {
-    const product = new Product({ name, category, rate, image });
+    const product = new Product({ name, category, description, image });
     await product.save();
     res.status(201).json(product);
   } catch (err) {
@@ -24,11 +24,11 @@ exports.createProduct = async (req, res) => {
 };
 
 exports.updateProduct = async (req, res) => {
-  const { name, category, rate } = req.body;
+  const { name, category, description } = req.body;
   // Use new Cloudinary URL if file uploaded, otherwise keep existing
   const image = req.file ? req.file.path : req.body.image;
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, { name, category, rate, image }, { new: true });
+    const product = await Product.findByIdAndUpdate(req.params.id, { name, category, description, image }, { new: true });
     res.json(product);
   } catch (err) {
     res.status(500).json({ message: err.message });
